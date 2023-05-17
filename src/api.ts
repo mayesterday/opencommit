@@ -12,6 +12,8 @@ import { CONFIG_MODES, getConfig } from './commands/config';
 const config = getConfig();
 
 let apiKey = config?.OPENAI_API_KEY;
+let basePath = config?.OPENAI_BASE_PATH;
+let maxTokens = config?.OPENAI_MAX_TOKENS;
 
 const [command, mode] = process.argv.slice(2);
 
@@ -28,23 +30,31 @@ if (!apiKey && command !== 'config' && mode !== CONFIG_MODES.set) {
   process.exit(1);
 }
 
+const MODEL = config?.model || 'gpt-3.5-turbo';
+
 class OpenAi {
   private openAiApiConfiguration = new OpenAiApiConfiguration({
     apiKey: apiKey
   });
+  private openAI!: OpenAIApi;
 
-  private openAI = new OpenAIApi(this.openAiApiConfiguration);
+  constructor() {
+    if (basePath) {
+      this.openAiApiConfiguration.basePath = basePath;
+    }
+    this.openAI = new OpenAIApi(this.openAiApiConfiguration);
+  }
 
   public generateCommitMessage = async (
     messages: Array<ChatCompletionRequestMessage>
   ): Promise<string | undefined> => {
     try {
       const { data } = await this.openAI.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+        model: MODEL,
         messages,
         temperature: 0,
         top_p: 0.1,
-        max_tokens: 196
+        max_tokens: maxTokens ?? 196
       });
 
       const message = data.choices[0].message;

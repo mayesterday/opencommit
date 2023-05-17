@@ -10,8 +10,11 @@ import { getI18nLocal } from '../i18n';
 
 export enum CONFIG_KEYS {
   OPENAI_API_KEY = 'OPENAI_API_KEY',
+  OPENAI_MAX_TOKENS = 'OPENAI_MAX_TOKENS',
+  OPENAI_BASE_PATH = 'OPENAI_BASE_PATH',
   description = 'description',
   emoji = 'emoji',
+  model = 'model',
   language = 'language'
 }
 
@@ -29,6 +32,7 @@ const validateConfig = (
     outro(
       `${chalk.red('✖')} Unsupported config key ${key}: ${validationMessage}`
     );
+
     process.exit(1);
   }
 };
@@ -49,6 +53,7 @@ export const configValidators = {
 
     return value;
   },
+
   [CONFIG_KEYS.description](value: any) {
     validateConfig(
       CONFIG_KEYS.description,
@@ -58,6 +63,17 @@ export const configValidators = {
 
     return value;
   },
+
+  [CONFIG_KEYS.OPENAI_MAX_TOKENS](value: any) {
+    validateConfig(
+      CONFIG_KEYS.OPENAI_MAX_TOKENS,
+      typeof value === 'number',
+      'Must be a number'
+    );
+
+    return value;
+  },
+
   [CONFIG_KEYS.emoji](value: any) {
     validateConfig(
       CONFIG_KEYS.emoji,
@@ -67,6 +83,7 @@ export const configValidators = {
 
     return value;
   },
+
   [CONFIG_KEYS.language](value: any) {
     validateConfig(
       CONFIG_KEYS.language,
@@ -74,6 +91,24 @@ export const configValidators = {
       `${value} is not supported yet`
     );
     return getI18nLocal(value);
+  },
+
+  [CONFIG_KEYS.OPENAI_BASE_PATH](value: any) {
+    validateConfig(
+      CONFIG_KEYS.OPENAI_BASE_PATH,
+      typeof value == 'string',
+      `${value} is not supported yet`
+    );
+    return value;
+  },
+
+  [CONFIG_KEYS.model](value: any) {
+    validateConfig(
+      CONFIG_KEYS.OPENAI_BASE_PATH,
+      value === 'gpt-3.5-turbo' || value === 'gpt-4',
+      `${value} is not supported yet, use 'gpt-4' or 'gpt-3.5-turbo' (default)`
+    );
+    return value;
   }
 };
 
@@ -124,7 +159,7 @@ export const setConfig = (keyValues: [key: string, value: string][]) => {
 
   writeFileSync(configPath, iniStringify(config), 'utf8');
 
-  outro(`${chalk.green('✔')} config successfully set`);
+  outro(`${chalk.green('✔')} Config successfully set`);
 };
 
 export const configCommand = command(
