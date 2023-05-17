@@ -7,6 +7,8 @@ import zh_CN from '../i18n/zh_CN.json' assert { type: 'json' };
 import zh_TW from '../i18n/zh_TW.json' assert { type: 'json' };
 import ja from '../i18n/ja.json' assert { type: 'json' };
 import pt_br from '../i18n/pt_br.json' assert { type: 'json' };
+import th from '../i18n/th.json' assert { type: 'json' };
+
 
 export enum I18nLocals {
   'en' = 'en',
@@ -17,7 +19,8 @@ export enum I18nLocals {
   'fr' = 'fr',
   'it' = 'it',
   'ko' = 'ko',
-  'pt_br' = 'pt_br'
+    'pt_br' = 'pt_br',
+    'th' = 'th'
 };
 
 export const i18n = {
@@ -29,7 +32,8 @@ export const i18n = {
   fr,
   it,
   ko,
-  pt_br
+    pt_br,
+    th
 };
 
 export const I18N_CONFIG_ALIAS: { [key: string]: string[] } = {
@@ -41,7 +45,8 @@ export const I18N_CONFIG_ALIAS: { [key: string]: string[] } = {
   fr: ['fr', 'French', 'française'],
   it: ['it', 'Italian', 'italiano'],
   pt_br: ['pt_br', 'Portuguese', 'português'],
-  en: ['en', 'English', 'english'],
+    en: ['en', 'English', 'english'],
+    th: ['th', 'Thai', 'ไทย']
 };
 
 export function getI18nLocal(value: string): string | boolean {
